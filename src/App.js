@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import TripList from "./components/TripList";
+import useFetch from "./hooks/useFetch";
 
 function App() {
+  const [url, setUrl] = useState("http://localhost:3000/trips33");
+  const { data: trips, isPending } = useFetch(url);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="trip-list">
+      <TripList />
+      {isPending && <div>Loading...</div>}
+      <ul>
+        {trips &&
+          trips?.map((trip) => {
+            return (
+              <li key={trip.id}>
+                <h3>Package: {trip.title}</h3>
+                <p>Price: {trip.price}</p>
+              </li>
+            );
+          })}
+      </ul>
+
+      <div className="filters">
+        <button
+          onClick={() => setUrl("http://localhost:3000/trips?loc=Europe")}
         >
-          Learn React
-        </a>
-      </header>
+          European Trips
+        </button>
+        <button onClick={() => setUrl("http://localhost:3000/trips")}>
+          All Trips
+        </button>
+      </div>
     </div>
   );
 }
